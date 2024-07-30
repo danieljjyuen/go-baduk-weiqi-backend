@@ -1,0 +1,40 @@
+type Player {
+    id: ID!
+    username: String!
+}
+
+type Room {
+    id: ID!
+    name: String!
+    owner: User!
+    players: [Player!]!
+    maxPlayers: Int!
+    playerAssignment: [PlayerAssignment!]!
+}
+
+type Game {
+    id: ID!
+    room: Room!
+    boardState: String!
+    isBlackTurn: Boolean!
+}
+
+type AuthPayload {
+    token: String
+    player: Player
+}
+
+type PlayerAssignment {
+    id: ID!
+    player: Player!
+    color: String!
+    room: Room!
+
+
+type Mutation {
+    createPlayer(username:String!, password:String!): Player
+    createRoom(name:String!, ownerId:ID!): Room
+    joinRoom(roomId: ID!, playerId: ID!): Room
+    makeMove(roomId: ID!, x: Int!, y: Int!, color: String!, userId: ID!): Game
+    login(username:String!, password:String!): AuthPayload
+    startGame(roomId: ID!): None

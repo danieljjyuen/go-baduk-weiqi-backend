@@ -24,18 +24,32 @@ public class Room {
     @OneToMany
     private List<PlayerAssignment> playerAssignment = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "game_id", referenceColumnName = "id")
+    private GameState gameState;
+
     public Room() {
     }
 
-    public Room(String name, Player owner) {
+    public Room(String name, Player owner, GameState gameState) {
         this.name = name;
         this.owner = owner;
+        this.gameState = gameState;
     }
 
-    public Room(Long id, String name, Player owner) {
+    public Room(Long id, String name, Player owner, GameState gameState) {
         this.id = id;
         this.name = name;
         this.owner = owner;
+        this.gameState = gameStaet;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 
     public Long getId() {

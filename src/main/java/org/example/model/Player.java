@@ -11,6 +11,7 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private boolean online = false;
     private String username;
     private String password;
     private String color;
@@ -30,6 +31,13 @@ public class Player {
         this.password = password;
     }
 
+    public boolean getOnline() {
+        return online;
+    }
+
+    public boolean setOnline(boolean online){
+        this.online = online;
+    }
     public Long getId() {
         return id;
     }

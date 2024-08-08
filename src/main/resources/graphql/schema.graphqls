@@ -7,41 +7,24 @@ type Player {
 type Room {
     id: ID!
     name: String!
-    owner: User!
-    players: [Player!]!
-    maxPlayers: Int!
-    playerAssignment: [PlayerAssignment!]!
-}
-
-type AuthPayload {
-    token: String
-    player: Player
-}
-
-type PlayerAssignment {
-    id: ID!
-    player: Player!
-    color: String!
-    room: Room!
-
-type Move {
-    x: Int!
-    y: Int!
-    color: Int!
-    userId: ID!
+    owner: Player!
+    challenger: Player
+    gameState: GameState
 }
 
 type GameState {
     id: ID!
-    boardState: [[IntArray!]]!
-    moves: [Move!]!
+    boardState: [[Int!]]!
     isBlackMove: Boolean!
+    blackPlayer: Player
+    whitePlayer: Player
+    room: Room
 }
 
 type ChatMessage {
     id: ID!
-    roomId: ID!
-    playerId: ID!
+    room: Room
+    player: Player
     message: String!
     timestamp: String!
 }
@@ -50,10 +33,10 @@ type Mutation {
     createPlayer(username:String!, password:String!): Player
     createRoom(name:String!, ownerId:ID!): Room
     joinRoom(roomId: ID!, playerId: ID!): Room
-    login(username:String!, password:String!): AuthPayload
-    startGame(roomId: ID!): None
+    login(username:String!, password:String!): Player
+    startGame(roomId: ID!): Boolean
     createGame: GameState
-
+}
 
 type Query {
     getGameState(roomId: ID!): GameState

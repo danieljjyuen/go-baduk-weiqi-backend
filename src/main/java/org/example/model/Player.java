@@ -14,7 +14,6 @@ public class Player {
     private boolean online = false;
     private String username;
     private String password;
-    private String color;
 
     public Player(Long id, String username, String password) {
         this.id = id;
@@ -35,7 +34,7 @@ public class Player {
         return online;
     }
 
-    public boolean setOnline(boolean online){
+    public void setOnline(boolean online){
         this.online = online;
     }
     public Long getId() {
@@ -61,7 +60,4 @@ public class Player {
     public void setPassword(String password) {
         this.password = password;
     }
-
-
-
 }

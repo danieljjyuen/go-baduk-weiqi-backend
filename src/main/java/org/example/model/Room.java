@@ -11,45 +11,22 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
     @ManyToOne
     private Player owner;
 
-    @ManyToMany
-    private List<Player> players = new ArrayList<>();
+    @ManyToOne
+    private Player challenger;
 
-    private final int maxPlayers = 2;
-
-    @OneToMany
-    private List<PlayerAssignment> playerAssignment = new ArrayList<>();
-
-    @OneToOne
-    @JoinColumn(name = "game_id", referenceColumnName = "id")
+    @OneToOne(mappedBy = "room", cascade = CascadeType.ALL)
     private GameState gameState;
 
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    private List<ChatMessage> chatMessages;
+
     public Room() {
-    }
-
-    public Room(String name, Player owner, GameState gameState) {
-        this.name = name;
-        this.owner = owner;
-        this.gameState = gameState;
-    }
-
-    public Room(Long id, String name, Player owner, GameState gameState) {
-        this.id = id;
-        this.name = name;
-        this.owner = owner;
-        this.gameState = gameStaet;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
     }
 
     public Long getId() {
@@ -76,20 +53,27 @@ public class Room {
         this.owner = owner;
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public Player getChallenger() {
+        return challenger;
     }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
+    public void setChallenger(Player challenger) {
+        this.challenger = challenger;
     }
 
-    public List<PlayerAssignment> getPlayerAssignment() {
-        return playerAssignment;
+    public GameState getGameState() {
+        return gameState;
     }
 
-    public void setPlayerAssignment(List<PlayerAssignment> playerAssignment) {
-        this.playerAssignment = playerAssignment;
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 
+    public List<ChatMessage> getChatMessages() {
+        return chatMessages;
+    }
+
+    public void setChatMessages(List<ChatMessage> chatMessages) {
+        this.chatMessages = chatMessages;
+    }
 }

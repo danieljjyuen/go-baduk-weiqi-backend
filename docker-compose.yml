@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: go_game_postgres
+    environment:
+      POSTGRES_DB: go_game_db
+      POSTGRES_USER: go_user
+      POSTGRES_PASSWORD: go_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

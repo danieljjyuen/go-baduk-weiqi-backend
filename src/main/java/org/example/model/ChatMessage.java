@@ -1,9 +1,6 @@
 package org.example.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -13,28 +10,19 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long roomId;
-    private Long playerId;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
+
+    @ManyToOne
+    private Player player;
+
     private String message;
+
     private LocalDateTime timestamp;
-
-
 
     public ChatMessage() {
 
-    }
-    public ChatMessage(Long roomId, Long playerId, String message, LocalDateTime timestamp) {
-        this.roomId = roomId;
-        this.playerId = playerId;
-        this.message = message;
-        this.timestamp = timestamp;
-    }
-    public ChatMessage(Long id, Long roomId, Long playerId, String message, LocalDateTime timestamp) {
-        this.id = id;
-        this.roomId = roomId;
-        this.playerId = playerId;
-        this.message = message;
-        this.timestamp = timestamp;
     }
 
     public Long getId() {
@@ -45,20 +33,20 @@ public class ChatMessage {
         this.id = id;
     }
 
-    public Long getRoomId() {
-        return roomId;
+    public Room getRoom() {
+        return room;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
-    public Long getPlayerId() {
-        return playerId;
+    public Player getPlayer() {
+        return player;
     }
 
-    public void setPlayerId(Long playerId) {
-        this.playerId = playerId;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public String getMessage() {
@@ -76,6 +64,4 @@ public class ChatMessage {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
-
-
 }

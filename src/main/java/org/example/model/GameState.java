@@ -11,17 +11,23 @@ public class GameState {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "board_state", columnDefinition = "Integer[][]")
+    @Lob
     private int[][] boardState = new int[19][19];
-    private List<Move> moves = new ArrayList<>();
+
     private boolean isBlackTurn = true;
+
+    @ManyToOne
+    private Player blackPlayer;
+
+    @ManyToOne
+    private Player whitePlayer;
+
+    @OneToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     public GameState() {
 
-    }
-
-    public GameState(Long id, String boardState) {
-        this.id = id;
     }
 
     public Long getId() {
@@ -40,18 +46,39 @@ public class GameState {
         this.boardState = boardState;
     }
 
-    public List<Move> getMoves() {
-        return moves;
-    }
-
-    public void setMoves(List<Move> moves) {
-        this.moves = moves;
-    }
-
-    public void setIsBlackTurn(){
-        this.isBlackTurn = !isBlackTurn;
-    }
-    public boolean getIsBlackTurn() {
+    public boolean isBlackTurn() {
         return isBlackTurn;
+    }
+
+    public void toggleTurn() {
+        setBlackTurn(!isBlackTurn);
+    }
+
+    public void setBlackTurn(boolean blackTurn) {
+        isBlackTurn = blackTurn;
+    }
+
+    public Player getBlackPlayer() {
+        return blackPlayer;
+    }
+
+    public void setBlackPlayer(Player blackPlayer) {
+        this.blackPlayer = blackPlayer;
+    }
+
+    public Player getWhitePlayer() {
+        return whitePlayer;
+    }
+
+    public void setWhitePlayer(Player whitePlayer) {
+        this.whitePlayer = whitePlayer;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 }

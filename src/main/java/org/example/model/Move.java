@@ -1,6 +1,17 @@
 package org.example.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+//@Entity
 public class Move {
+
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
+
     private Long gameId;
     private int x;
     private int y;
@@ -20,6 +31,15 @@ public class Move {
         this.color = color;
         this.playerId = playerId;
     }
+
+//    public Move(Long id, Long gameId, int x, int y, int color, Long playerId) {
+//        this.id = id;
+//        this.gameId = gameId;
+//        this.x = x;
+//        this.y = y;
+//        this.color = color;
+//        this.playerId = playerId;
+//    }
 
     public Long getGameId() {
         return gameId;
@@ -60,4 +80,12 @@ public class Move {
     public void setPlayerId(Long playerId) {
         this.playerId = playerId;
     }
+
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 }

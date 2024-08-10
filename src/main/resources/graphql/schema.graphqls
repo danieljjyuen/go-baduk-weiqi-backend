@@ -40,4 +40,5 @@ type Mutation {
 
 type Query {
     getGameState(roomId: ID!): GameState
+    getRooms: [Room]
 }

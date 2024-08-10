@@ -11,6 +11,8 @@ import org.example.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class GameResolver implements GraphQLQueryResolver, GraphQLMutationResolver {
 
@@ -45,13 +47,8 @@ public class GameResolver implements GraphQLQueryResolver, GraphQLMutationResolv
     public Room joinRoom(Long roomId, Long playerId) {
         return roomService.joinRoom(roomId, playerId);
     }
+
+    public List<Room> getRooms() {
+        return roomService.getAvailableRooms();
+    }
 }
-
-
-
-
-
-
-
-
-

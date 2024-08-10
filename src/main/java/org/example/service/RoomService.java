@@ -7,6 +7,8 @@ import org.example.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoomService {
 
@@ -43,4 +45,7 @@ public class RoomService {
         return roomRepository.save(room);
     }
 
+    public List<Room> getAvailableRooms() {
+        return roomRepository.findByChallengerIsNull();
+    }
 }

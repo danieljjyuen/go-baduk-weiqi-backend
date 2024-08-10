@@ -4,6 +4,7 @@ import org.example.model.GameState;
 import org.example.model.Move;
 import org.example.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -20,20 +21,17 @@ public class GameController {
     @Autowired
     private final SimpMessagingTemplate messagingTemplate;
 
-    @Autowired
     public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate){
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping("/move")
-    @SendTo("/topic/room/{roomId}")
-    public GameState makeMove(@Payload Move move) {
+    @MessageMapping("/move/gameId")
+    @SendTo("/topic/room/{gameId}")
+    public GameState makeMove(@DestinationVariable Long gameId, @Payload Move move) {
         GameState gameState = gameService.makeMove(move);
-        messagingTemplate.convertAndSend("/topic/room/" + move.getGameId(), gameState);
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
         return gameState;
     //        return gameService.makeMove(move);
     }
-
-
 }

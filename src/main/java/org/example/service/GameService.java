@@ -8,8 +8,6 @@ import org.example.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
 public class GameService {
 
@@ -71,7 +69,9 @@ public class GameService {
             throw new RuntimeException("Cannot start game without two players");
         }
 
-        createGame(room);
+        GameState gameState = createGame(room);
+        room.setGameState(gameState);
+        roomRepository.save(room);
         return true;
     }
 }

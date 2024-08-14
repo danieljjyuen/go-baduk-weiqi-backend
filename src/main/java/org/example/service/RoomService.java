@@ -6,24 +6,24 @@ import org.example.repository.PlayerRepository;
 import org.example.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class RoomService {
 
-    @Autowired
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository;
+
+    private final RoomRepository roomRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
-
     public RoomService(PlayerRepository playerRepository, RoomRepository roomRepository) {
         this.playerRepository = playerRepository;
         this.roomRepository = roomRepository;
     }
 
-
+    @Transactional
     public Room createRoom(String name, Long ownerId){
         Room room = new Room();
         Player owner = playerRepository.findById(ownerId).orElseThrow(() -> new RuntimeException("Owner not found"));
@@ -33,6 +33,7 @@ public class RoomService {
 
     }
 
+    @Transactional
     public Room joinRoom(Long roomId, Long playerId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException("Room not found"));
         Player player = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));

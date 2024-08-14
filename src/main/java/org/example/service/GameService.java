@@ -7,25 +7,25 @@ import org.example.repository.PlayerRepository;
 import org.example.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GameService {
 
-    @Autowired
-    private GameStateRepository gameStateRepository;
+    private final GameStateRepository gameStateRepository;
+
+    private final RoomRepository roomRepository;
+
+    private final PlayerRepository playerRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
-
-    @Autowired
-    private PlayerRepository playerRepository;
-
     public GameService(GameStateRepository gameStateRepository, RoomRepository roomRepository, PlayerRepository playerRepository) {
         this.gameStateRepository = gameStateRepository;
         this.roomRepository = roomRepository;
         this.playerRepository = playerRepository;
     }
 
+    @Transactional
     public GameState makeMove(Move move){
         Long gameStateId = move.getGameId();
         int x = move.getX();
@@ -34,13 +34,14 @@ public class GameService {
         GameState gameState = gameStateRepository.findById(gameStateId).orElseThrow(() -> new RuntimeException("Game not found"));
 
         //do update moves
-        if (gameState.getBoardState()[x][y] != 0){
+
+        if (gameState.getBoardState().get(x).get(y) != 0 || gameState.getBoardState().get(x).get(y) != null){
             throw new RuntimeException("Invalid Move");
         }else {
             //black = 1
             //white = 2
-            int stone = gameState.isBlackTurn() ? 1: 2;
-            gameState.getBoardState()[x][y] = stone;
+            int stone = gameState.getIsBlackTurn() ? 1: 2;
+            gameState.getBoardState().get(x).set(y, stone);
             gameState.toggleTurn();
         }
         gameStateRepository.save(gameState);
@@ -51,7 +52,7 @@ public class GameService {
         return gameStateRepository.findById(gameStateId).orElseThrow(() -> new RuntimeException("Game not found"));
     }
 
-
+    @Transactional
     public GameState createGame(Room room) {
         GameState gameState = new GameState();
         //default owner of the room uses black stones
@@ -62,7 +63,8 @@ public class GameService {
         return gameStateRepository.save(gameState);
     }
 
-    public boolean startGame(Long roomId) {
+    @Transactional
+    public GameState startGame(Long roomId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException("Room not found"));
 
         if(room.getOwner() == null || room.getChallenger() == null) {
@@ -72,6 +74,6 @@ public class GameService {
         GameState gameState = createGame(room);
         room.setGameState(gameState);
         roomRepository.save(room);
-        return true;
+        return gameState;
     }
 }

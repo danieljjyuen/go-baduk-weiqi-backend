@@ -1,7 +1,7 @@
 type Player {
     id: ID!
     username: String!
-    online: Boolean!
+    online: Boolean
 }
 
 type Room {
@@ -10,12 +10,13 @@ type Room {
     owner: Player!
     challenger: Player
     gameState: GameState
+    chatMessages: [ChatMessage]
 }
 
 type GameState {
     id: ID!
     boardState: [[Int!]]!
-    isBlackMove: Boolean!
+    isBlackTurn: Boolean
     blackPlayer: Player
     whitePlayer: Player
     room: Room
@@ -34,11 +35,10 @@ type Mutation {
     createRoom(name:String!, ownerId:ID!): Room
     joinRoom(roomId: ID!, playerId: ID!): Room
     login(username:String!, password:String!): Player
-    startGame(roomId: ID!): Boolean
-    createGame: GameState
+    startGame(roomId: ID!): GameState
 }
 
 type Query {
-    getGameState(roomId: ID!): GameState
+    getGameState(gameId: ID!): GameState
     getRooms: [Room]
 }

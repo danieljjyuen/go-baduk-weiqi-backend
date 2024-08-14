@@ -8,26 +8,27 @@ import org.example.repository.PlayerRepository;
 import org.example.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
 public class ChatService {
-    @Autowired
-    private RoomRepository roomRepository;
+
+    private final RoomRepository roomRepository;
+
+    private final PlayerRepository playerRepository;
+
+    private final ChatMessageRepository chatMessageRepository;
 
     @Autowired
-    private PlayerRepository playerRepository;
-
-    @Autowired
-    private ChatMessageRepository chatMessageRepository;
-
     public ChatService(RoomRepository roomRepository, PlayerRepository playerRepository, ChatMessageRepository chatMessageRepository) {
         this.roomRepository = roomRepository;
         this.playerRepository = playerRepository;
         this.chatMessageRepository = chatMessageRepository;
     }
 
+    @Transactional
     public ChatMessage sendChatMessage(Long roomId, Long playerId, String message) {
         Room room  = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException("Room not found"));
         Player player = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));

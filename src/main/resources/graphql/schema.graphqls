@@ -4,6 +4,10 @@ type Player {
     online: Boolean
 }
 
+type Subscription {
+  onGameStart(roomId: ID!): GameState
+}
+
 type Room {
     id: ID!
     name: String!
@@ -41,4 +45,5 @@ type Mutation {
 type Query {
     getGameState(gameId: ID!): GameState
     getRooms: [Room]
+    getGameStateWithRoomId(roomId: ID!) : GameState
 }

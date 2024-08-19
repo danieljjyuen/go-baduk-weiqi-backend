@@ -52,6 +52,10 @@ public class GameService {
         return gameStateRepository.findById(gameStateId).orElseThrow(() -> new RuntimeException("Game not found"));
     }
 
+    public GameState getGameStateWithRoomId(Long roomId) {
+        return gameStateRepository.findByRoomId(roomId).orElseThrow(() -> new RuntimeException("Game not found"));
+    }
+
     @Transactional
     public GameState createGame(Room room) {
         GameState gameState = new GameState();

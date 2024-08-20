@@ -1,5 +1,6 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -23,7 +24,9 @@ public class Room {
     @OneToOne(mappedBy = "room", cascade = CascadeType.ALL)
     private GameState gameState;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    //@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room")
+    @JsonManagedReference
     private List<ChatMessage> chatMessages;
 
     public Room() {

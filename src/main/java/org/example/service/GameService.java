@@ -53,7 +53,9 @@ public class GameService {
     }
 
     public GameState getGameStateWithRoomId(Long roomId) {
-        return gameStateRepository.findByRoomId(roomId).orElseThrow(() -> new RuntimeException("Game not found"));
+        GameState gameState =  gameStateRepository.findByRoomId(roomId).orElseThrow(() -> new RuntimeException("Game not found"));
+        System.out.println(gameState);
+        return gameState;
     }
 
     @Transactional

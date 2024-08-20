@@ -1,5 +1,6 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -12,10 +13,30 @@ public class ChatMessage {
 
     @ManyToOne
     @JoinColumn(name = "room_id")
+    @JsonIgnore
     private Room room;
 
-    @ManyToOne
-    private Player player;
+    @Column(name = "player_username")
+    public String playerUsername;
+
+    public String getPlayerUsername() {
+        return playerUsername;
+    }
+
+    public void setPlayerUsername(String playerUsername) {
+        this.playerUsername = playerUsername;
+    }
+
+    public Long getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(Long playerId) {
+        this.playerId = playerId;
+    }
+
+    @Column(name = "player_id")
+    private Long playerId;
 
     private String message;
 
@@ -39,14 +60,6 @@ public class ChatMessage {
 
     public void setRoom(Room room) {
         this.room = room;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public String getMessage() {

@@ -35,7 +35,8 @@ public class ChatService {
 
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setRoom(room);
-        chatMessage.setPlayer(player);
+        chatMessage.setPlayerId(playerId);
+        chatMessage.setPlayerUsername(player.getUsername());
         chatMessage.setMessage(message);
         chatMessage.setTimestamp(LocalDateTime.now());
 

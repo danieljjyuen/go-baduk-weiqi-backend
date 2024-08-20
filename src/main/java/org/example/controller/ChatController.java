@@ -22,10 +22,10 @@ public class ChatController {
         this.messagingTemplate = messagingTemplate;
 
     }
-    @MessageMapping("/chat")
+    @MessageMapping("/room/{roomId}/chat")
     @SendTo("/topic/room/{roomId}/chat")
     public ChatMessage sendChatMessage(@DestinationVariable Long roomId, ChatMessage chatMessage) {
-        ChatMessage sentMessage = chatService.sendChatMessage(roomId, chatMessage.getPlayer().getId(), chatMessage.getMessage());
+        ChatMessage sentMessage = chatService.sendChatMessage(roomId, chatMessage.getPlayerId(), chatMessage.getMessage());
         messagingTemplate.convertAndSend("/topic/room/" + roomId + "/chat", sentMessage);
         return sentMessage;
         //return gameService.sendChatMessage(chatMessage.getRoomId(), chatMessage.getPlayerId(), chatMessage.getMessage());

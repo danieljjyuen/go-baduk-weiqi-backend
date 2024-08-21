@@ -26,7 +26,7 @@ public class ChatController {
     @SendTo("/topic/room/{roomId}/chat")
     public ChatMessage sendChatMessage(@DestinationVariable Long roomId, ChatMessage chatMessage) {
         ChatMessage sentMessage = chatService.sendChatMessage(roomId, chatMessage.getPlayerId(), chatMessage.getMessage());
-        messagingTemplate.convertAndSend("/topic/room/" + roomId + "/chat", sentMessage);
+        //messagingTemplate.convertAndSend("/topic/room/" + roomId + "/chat", sentMessage);
         return sentMessage;
         //return gameService.sendChatMessage(chatMessage.getRoomId(), chatMessage.getPlayerId(), chatMessage.getMessage());
     }

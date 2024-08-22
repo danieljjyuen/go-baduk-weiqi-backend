@@ -26,26 +26,59 @@ public class GameService {
     }
 
     @Transactional
-    public GameState makeMove(Move move){
+    public Move makeMove(Move move){
         Long gameStateId = move.getGameId();
         int x = move.getX();
         int y = move.getY();
+        Long playerId = move.getPlayerId();
+        int color = move.getColor();
 
         GameState gameState = gameStateRepository.findById(gameStateId).orElseThrow(() -> new RuntimeException("Game not found"));
+        Long player1 = gameState.getBlackPlayer().getId();
+        Long player2 = gameState.getWhitePlayer().getId();
 
         //do update moves
+        if(color == 1 || color == 2){
+            if (gameState.getBoardState().get(x).get(y) != 0 ) {
+                System.out.println("POINT X Y IS " + gameState.getBoardState().get(x).get(y));
+                throw new RuntimeException("Invalid Move");
+            }else {
+                //black = 1
+                //white = 2
 
-        if (gameState.getBoardState().get(x).get(y) != 0 || gameState.getBoardState().get(x).get(y) != null){
-            throw new RuntimeException("Invalid Move");
+                int stone = gameState.getIsBlackTurn() ? 1: 2;
+                if(stone == color){
+                    if((stone == 1 && player1.equals(playerId)) || (stone ==2 && player2.equals(playerId)))  {
+                        gameState.getBoardState().get(x).set(y, stone);
+                        gameState.toggleTurn();
+
+                        gameState.serializeBoardState();
+                        gameStateRepository.save(gameState);
+                        return move;
+                    }else{
+                        System.out.println("NOT YOUR TURN  " + x+ " " +y+ gameState.getBoardState().get(x).get(y));
+                        throw new RuntimeException("Not your turn");
+                    }
+                }else{
+                    System.out.println("color mismatch  " + x+ " " +y+ gameState.getBoardState().get(x).get(y));
+                    throw new RuntimeException("color mismatch");
+                }
+
+            }
+        }else if(color == 0 ){
+            //handle removal;
+            System.out.println("REMOVALLLLLL" + color + "   " +x + " " + y + " " +  gameState.getBoardState().get(x).get(y));
+
+            gameState.getBoardState().get(x).set(y, color);
+            System.out.println("after removal " + gameState.getBoardState().get(x).get(y));
+
+            gameState.serializeBoardState();
+            gameStateRepository.save(gameState);
+            return move;
         }else {
-            //black = 1
-            //white = 2
-            int stone = gameState.getIsBlackTurn() ? 1: 2;
-            gameState.getBoardState().get(x).set(y, stone);
-            gameState.toggleTurn();
+            System.out.println("INVALID MOVE  " + x+ " " +y+ gameState.getBoardState().get(x).get(y));
+            throw new RuntimeException("invalid move");
         }
-        gameStateRepository.save(gameState);
-        return gameState;
     }
 
     public GameState getGameState(Long gameStateId) {

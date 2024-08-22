@@ -14,7 +14,7 @@ public class GameState {
     private Long id;
 
     @Transient
-    private List<List<Integer>> boardState = new ArrayList<>();
+    private List<List<Integer>> boardState;
 
     @Column(columnDefinition = "TEXT")
     private String boardStateJson;
@@ -49,17 +49,35 @@ public class GameState {
         try {
             ObjectMapper mapper = new ObjectMapper();
             this.boardState = mapper.readValue(this.boardStateJson, List.class);
+            // Ensure the board is properly initialized
+            if (this.boardState.size() != 19) {
+                throw new RuntimeException("Board state deserialization failed: Incorrect row count");
+            }
+            for (List<Integer> row : this.boardState) {
+                if (row.size() != 19) {
+                    throw new RuntimeException("Board state deserialization failed: Incorrect column count");
+                }
+            }
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error deserializing board state", e);
         }
     }
 
+//    public GameState() {
+//
+//    }
+
+
     public GameState() {
+        this.boardState = new ArrayList<>();
 
-    }
-
-    public GameState(List<List<Integer>> boardState) {
-        this.boardState = boardState;
+        for (int i = 0; i < 19; i++) {
+            List<Integer> row = new ArrayList<>();
+            for (int j = 0; j < 19; j++) {
+                row.add(0); // Initialize with default value
+            }
+            this.boardState.add(row);
+        }
         serializeBoardState();
     }
 

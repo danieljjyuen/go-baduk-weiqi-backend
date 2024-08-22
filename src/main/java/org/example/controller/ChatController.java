@@ -22,6 +22,7 @@ public class ChatController {
         this.messagingTemplate = messagingTemplate;
 
     }
+
     @MessageMapping("/room/{roomId}/chat")
     @SendTo("/topic/room/{roomId}/chat")
     public ChatMessage sendChatMessage(@DestinationVariable Long roomId, ChatMessage chatMessage) {

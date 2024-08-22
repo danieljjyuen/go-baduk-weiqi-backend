@@ -26,12 +26,14 @@ public class GameController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping("/move/gameId")
-    @SendTo("/topic/room/{gameId}")
-    public GameState makeMove(@DestinationVariable Long gameId, @Payload Move move) {
-        GameState gameState = gameService.makeMove(move);
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
-        return gameState;
+    @MessageMapping("/room/{roomId}/game/{gameId}")
+    @SendTo("/topic/room/{roomId}/game/{gameId}")
+    public Move makeMove(@DestinationVariable Long gameId, @Payload Move move) {
+        Move processedMove = gameService.makeMove(move);
+//        messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
+//        return gameState;
+        return processedMove;
+      //  return move;
     //        return gameService.makeMove(move);
     }
 }

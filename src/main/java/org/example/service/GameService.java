@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class GameService {
 
@@ -26,7 +28,7 @@ public class GameService {
     }
 
     @Transactional
-    public Move makeMove(Move move){
+    public GameState makeMove(Move move){
         Long gameStateId = move.getGameId();
         int x = move.getX();
         int y = move.getY();
@@ -45,16 +47,19 @@ public class GameService {
             }else {
                 //black = 1
                 //white = 2
-
                 int stone = gameState.getIsBlackTurn() ? 1: 2;
                 if(stone == color){
                     if((stone == 1 && player1.equals(playerId)) || (stone ==2 && player2.equals(playerId)))  {
                         gameState.getBoardState().get(x).set(y, stone);
                         gameState.toggleTurn();
+                        //check for captures
+                        int opponentcolor = stone == 1 ? 2 : 1;
+
+                        removeCaptureGroups(opponentcolor, gameState.getBoardState());
 
                         gameState.serializeBoardState();
-                        gameStateRepository.save(gameState);
-                        return move;
+                        GameState updatedState = gameStateRepository.save(gameState);
+                        return updatedState;
                     }else{
                         System.out.println("NOT YOUR TURN  " + x+ " " +y+ gameState.getBoardState().get(x).get(y));
                         throw new RuntimeException("Not your turn");
@@ -65,16 +70,6 @@ public class GameService {
                 }
 
             }
-        }else if(color == 0 ){
-            //handle removal;
-            System.out.println("REMOVALLLLLL" + color + "   " +x + " " + y + " " +  gameState.getBoardState().get(x).get(y));
-
-            gameState.getBoardState().get(x).set(y, color);
-            System.out.println("after removal " + gameState.getBoardState().get(x).get(y));
-
-            gameState.serializeBoardState();
-            gameStateRepository.save(gameState);
-            return move;
         }else {
             System.out.println("INVALID MOVE  " + x+ " " +y+ gameState.getBoardState().get(x).get(y));
             throw new RuntimeException("invalid move");
@@ -114,5 +109,57 @@ public class GameService {
         room.setGameState(gameState);
         roomRepository.save(room);
         return gameState;
+    }
+    //opponent's color
+    private void removeCaptureGroups(int color, List<List<Integer>> board) {
+        boolean[][] visited = new boolean[board.size()][board.get(0).size()];
+
+        for(int i = 0; i < board.size(); i++){
+            for(int j = 0; j < board.size(); j++){
+                if(board.get(i).get(j) == color && !visited[i][j]){
+                    if(isCaptured(i, j, color, board, visited)){
+                        removeGroups(i,j, color,board);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isCaptured(int x, int y, int color, List<List<Integer>> board, boolean[][] visited) {
+        //out of bound is considered as enemy stone
+        if(x < 0 || y < 0 || x >= board.size() || y >= board.get(0).size()) return true;
+
+        //there is empty space meaning stone/group have liberties available
+        if(board.get(x).get(y) == 0) return false;
+
+        //surrounded by enemy stones
+        if(board.get(x).get(y) != color) return true;
+
+        if(visited[x][y]) return true;
+
+        visited[x][y] = true;
+
+        boolean captured = true;
+
+        //check 4 directions
+        captured &= isCaptured(x, y-1, color, board, visited);
+        captured &= isCaptured(x, y+1, color, board, visited);
+        captured &= isCaptured(x-1, y, color, board, visited);
+        captured &= isCaptured(x+1, y, color, board, visited);
+
+        return captured;
+    }
+
+    private void removeGroups(int x, int y, int color, List<List<Integer>> board) {
+        // out of bound
+        if(x < 0 || y < 0 || x >= board.size() || y >= board.get(0).size()) return;
+        if(board.get(x).get(y) != color) return;
+        //empty the spot
+        board.get(x).set(y, 0);
+        //recursively remove the stones that are connected
+        removeGroups(x, y-1, color, board);
+        removeGroups(x, y+1, color, board);
+        removeGroups(x-1, y, color, board);
+        removeGroups(x+1, y, color, board);
     }
 }

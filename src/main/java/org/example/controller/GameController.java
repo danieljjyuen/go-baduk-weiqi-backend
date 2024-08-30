@@ -28,11 +28,13 @@ public class GameController {
 
     @MessageMapping("/room/{roomId}/game/{gameId}")
     @SendTo("/topic/room/{roomId}/game/{gameId}")
-    public Move makeMove(@DestinationVariable Long gameId, @Payload Move move) {
-        Move processedMove = gameService.makeMove(move);
+    public GameState makeMove(@DestinationVariable Long gameId, @Payload Move move) {
+        GameState updatedState = gameService.makeMove(move);
+        System.out.println("SENT UPDATED STATE~~~");
+        return updatedState;
 //        messagingTemplate.convertAndSend("/topic/game/" + gameId, gameState);
 //        return gameState;
-        return processedMove;
+
       //  return move;
     //        return gameService.makeMove(move);
     }

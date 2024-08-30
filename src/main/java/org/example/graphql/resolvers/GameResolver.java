@@ -83,7 +83,7 @@
         }
 
         @QueryMapping
-        public  GameState getGameStateWithRoomId(@Argument Long roomId) {
+        public GameState getGameStateWithRoomId(@Argument Long roomId) {
             return gameService.getGameStateWithRoomId((roomId));
         }
 

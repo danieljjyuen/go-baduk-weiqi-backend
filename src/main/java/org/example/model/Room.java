@@ -1,5 +1,6 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -21,10 +22,13 @@ public class Room {
     @ManyToOne
     private Player challenger;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "room", cascade = CascadeType.ALL)
     private GameState gameState;
 
+
     //@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @JsonIgnore
     @OneToMany(mappedBy = "room")
     @JsonManagedReference
     private List<ChatMessage> chatMessages;

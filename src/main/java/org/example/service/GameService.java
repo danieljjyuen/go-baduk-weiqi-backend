@@ -52,6 +52,10 @@ public class GameService {
                     if((stone == 1 && player1.equals(playerId)) || (stone ==2 && player2.equals(playerId)))  {
                         gameState.getBoardState().get(x).set(y, stone);
                         gameState.toggleTurn();
+
+                        //check if the move is a self capture
+                        if(selfCapture(stone, gameState.getBoardState())) throw new RuntimeException("self capture not allowed");
+
                         //check for captures
                         int opponentcolor = stone == 1 ? 2 : 1;
 
@@ -68,7 +72,6 @@ public class GameService {
                     System.out.println("color mismatch  " + x+ " " +y+ gameState.getBoardState().get(x).get(y));
                     throw new RuntimeException("color mismatch");
                 }
-
             }
         }else {
             System.out.println("INVALID MOVE  " + x+ " " +y+ gameState.getBoardState().get(x).get(y));
@@ -123,6 +126,21 @@ public class GameService {
                 }
             }
         }
+    }
+
+    private boolean selfCapture(int color, List<List<Integer>> board) {
+        boolean[][] visited = new boolean[board.size()][board.get(0).size()];
+
+        for(int i = 0; i < board.size(); i++){
+            for(int j = 0; j < board.size(); j++){
+                if(board.get(i).get(j) == color && !visited[i][j]){
+                    if(isCaptured(i, j, color, board, visited)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isCaptured(int x, int y, int color, List<List<Integer>> board, boolean[][] visited) {

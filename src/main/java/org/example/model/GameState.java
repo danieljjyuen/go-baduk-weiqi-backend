@@ -31,6 +31,11 @@ public class GameState {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    @Column
+    private Long previousHash;
+
+    @Column
+    private Long twoTurnsHash;
 
     @PrePersist
     @PreUpdate
@@ -140,4 +145,29 @@ public class GameState {
     public void setBoardStateJson(String boardStateJson) {
         this.boardStateJson = boardStateJson;
     }
+
+    public Boolean getBlackTurn() {
+        return isBlackTurn;
+    }
+
+    public void setBlackTurn(Boolean blackTurn) {
+        isBlackTurn = blackTurn;
+    }
+
+    public Long getPreviousHash() {
+        return previousHash;
+    }
+
+    public void setPreviousHash(Long previousHash) {
+        this.previousHash = previousHash;
+    }
+
+    public Long getTwoTurnsHash() {
+        return twoTurnsHash;
+    }
+
+    public void setTwoTurnsHash(Long twoTurnsHash) {
+        this.twoTurnsHash = twoTurnsHash;
+    }
+
 }

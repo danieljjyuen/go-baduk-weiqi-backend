@@ -5,6 +5,7 @@ import org.example.repository.ChatMessageRepository;
 import org.example.repository.GameStateRepository;
 import org.example.repository.PlayerRepository;
 import org.example.repository.RoomRepository;
+import org.example.utils.Zobrist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +21,14 @@ public class GameService {
 
     private final PlayerRepository playerRepository;
 
+    private final Zobrist zobrist;
+
     @Autowired
     public GameService(GameStateRepository gameStateRepository, RoomRepository roomRepository, PlayerRepository playerRepository) {
         this.gameStateRepository = gameStateRepository;
         this.roomRepository = roomRepository;
         this.playerRepository = playerRepository;
+        this.zobrist= new Zobrist();
     }
 
     @Transactional
@@ -53,13 +57,19 @@ public class GameService {
                         gameState.getBoardState().get(x).set(y, stone);
                         gameState.toggleTurn();
 
-                        //check if the move is a self capture
-                        if(selfCapture(stone, gameState.getBoardState())) throw new RuntimeException("self capture not allowed");
-
                         //check for captures
                         int opponentcolor = stone == 1 ? 2 : 1;
 
                         removeCaptureGroups(opponentcolor, gameState.getBoardState());
+
+                        //check if the move is a self capture
+                        if(selfCapture(stone, gameState.getBoardState())) throw new RuntimeException("self capture not allowed");
+
+
+                        //check ko rule
+                        if(koRule(gameState)){
+                            throw new RuntimeException("ko rule, cannot make this move");
+                        }
 
                         gameState.serializeBoardState();
                         GameState updatedState = gameStateRepository.save(gameState);
@@ -97,6 +107,9 @@ public class GameService {
         //challenger takes white stones
         gameState.setWhitePlayer(room.getChallenger());
         gameState.setRoom(room);
+        //generates initial board hash
+        Long startHash = zobrist.generateHash(gameState.getBoardState());
+        gameState.setPreviousHash(startHash);
         return gameStateRepository.save(gameState);
     }
 
@@ -179,5 +192,24 @@ public class GameService {
         removeGroups(x, y+1, color, board);
         removeGroups(x-1, y, color, board);
         removeGroups(x+1, y, color, board);
+    }
+
+    private boolean koRule(GameState gameState) {
+        if(gameState.getTwoTurnsHash() == null) {
+            gameState.setTwoTurnsHash(gameState.getPreviousHash());
+            gameState.setPreviousHash(zobrist.generateHash(gameState.getBoardState()));
+            //not ko
+            return false;
+        }else {
+            long currentHash = zobrist.generateHash(gameState.getBoardState());
+            if(currentHash == gameState.getPreviousHash() || currentHash == gameState.getTwoTurnsHash()){
+                //ko - same board state
+                return true;
+            }else{
+                gameState.setTwoTurnsHash(gameState.getPreviousHash());
+                gameState.setPreviousHash(currentHash);
+                return false;
+            }
+        }
     }
 }

@@ -27,6 +27,12 @@ public class GameState {
     @ManyToOne
     private Player whitePlayer;
 
+    @Column
+    private int blackPlayerCaptures = 0;
+
+    @Column
+    private int whitePlayerCaptures = 0;
+
     @OneToOne
     @JoinColumn(name = "room_id")
     private Room room;
@@ -170,4 +176,19 @@ public class GameState {
         this.twoTurnsHash = twoTurnsHash;
     }
 
+    public void setBlackPlayerCaptures(int blackPlayerCaptures) {
+        this.blackPlayerCaptures = blackPlayerCaptures;
+    }
+
+    public int getWhitePlayerCaptures() {
+        return whitePlayerCaptures;
+    }
+
+    public void setWhitePlayerCaptures(int whitePlayerCaptures) {
+        this.whitePlayerCaptures = whitePlayerCaptures;
+    }
+
+    public int getBlackPlayerCaptures() {
+        return blackPlayerCaptures;
+    }
 }

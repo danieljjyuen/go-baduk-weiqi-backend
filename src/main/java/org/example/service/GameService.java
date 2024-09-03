@@ -23,6 +23,9 @@ public class GameService {
 
     private final Zobrist zobrist;
 
+    //counter for captures
+    int count = 0;
+
     @Autowired
     public GameService(GameStateRepository gameStateRepository, RoomRepository roomRepository, PlayerRepository playerRepository) {
         this.gameStateRepository = gameStateRepository;
@@ -59,16 +62,22 @@ public class GameService {
 
                         //check for captures
                         int opponentcolor = stone == 1 ? 2 : 1;
-
+                        count = 0;
                         removeCaptureGroups(opponentcolor, gameState.getBoardState());
 
                         //check if the move is a self capture
                         if(selfCapture(stone, gameState.getBoardState())) throw new RuntimeException("self capture not allowed");
 
-
                         //check ko rule
                         if(koRule(gameState)){
                             throw new RuntimeException("ko rule, cannot make this move");
+                        }
+
+                        //black stones are captured
+                        if(opponentcolor == 1) {
+                            gameState.setWhitePlayerCaptures(gameState.getWhitePlayerCaptures() + count);
+                        }else {
+                            gameState.setBlackPlayerCaptures(gameState.getBlackPlayerCaptures() + count);
                         }
 
                         gameState.serializeBoardState();
@@ -187,6 +196,7 @@ public class GameService {
         if(board.get(x).get(y) != color) return;
         //empty the spot
         board.get(x).set(y, 0);
+        count++;
         //recursively remove the stones that are connected
         removeGroups(x, y-1, color, board);
         removeGroups(x, y+1, color, board);

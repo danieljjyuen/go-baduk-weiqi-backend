@@ -36,6 +36,9 @@ public class GameState {
     @Column
     private int whitePlayerCaptures = 0;
 
+    @Column
+    private boolean gameOver = false;
+
     @OneToOne
     @JoinColumn(name = "room_id")
     private Room room;
@@ -204,5 +207,12 @@ public class GameState {
     }
     public void resetPass() {
         passCount = 0;
+    }
+
+    public void setGameOver(boolean flag) {
+        gameOver = flag;
+    }
+    public boolean getGameOver() {
+        return gameOver;
     }
 }

@@ -34,12 +34,16 @@ public class GameService {
         this.zobrist= new Zobrist();
     }
 
-    public void endGame() {
+    public void endGame(Long gameStateId) {
+        GameState gameState = gameStateRepository.findById(gameStateId).orElseThrow(() -> new RuntimeException("Game not found"));
+        gameState.setGameOver(true);
+        gameStateRepository.save(gameState);
         System.out.println("Game ended");
     }
 
     @Transactional
     public GameState makeMove(Move move){
+
         Long gameStateId = move.getGameId();
         int x = move.getX();
         int y = move.getY();
@@ -50,19 +54,25 @@ public class GameService {
         Long player1 = gameState.getBlackPlayer().getId();
         Long player2 = gameState.getWhitePlayer().getId();
 
+        if(gameState.getGameOver()){
+            throw new RuntimeException("Game has concluded");
+        }
         //handle pass , resignations -1 = pass, -2 = resign
         if(color == -1){
+            if((gameState.getIsBlackTurn() && playerId.equals(player2)) || (!gameState.getIsBlackTurn() && playerId.equals(player1)) ){
+                throw new RuntimeException("Not your turn");
+            }
             gameState.increasePass();
             gameState.toggleTurn();
             if(gameState.getPassCount() == 2){
-                endGame();
+                endGame(gameStateId);
             }
             GameState passUpdate = gameStateRepository.save(gameState);
             return passUpdate;
         }
 
         if(color == -2) {
-            endGame();
+            endGame(gameStateId);
             return gameState;
         }
         //do update moves

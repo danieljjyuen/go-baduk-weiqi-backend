@@ -21,6 +21,9 @@ public class GameState {
 
     private Boolean isBlackTurn = true;
 
+    @Column
+    private int passCount = 0;
+
     @ManyToOne
     private Player blackPlayer;
 
@@ -190,5 +193,16 @@ public class GameState {
 
     public int getBlackPlayerCaptures() {
         return blackPlayerCaptures;
+    }
+
+    public int getPassCount() {
+        return passCount;
+    }
+
+    public void increasePass() {
+        passCount++;
+    }
+    public void resetPass() {
+        passCount = 0;
     }
 }

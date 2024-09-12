@@ -34,6 +34,10 @@ public class GameService {
         this.zobrist= new Zobrist();
     }
 
+    public void endGame() {
+        System.out.println("Game ended");
+    }
+
     @Transactional
     public GameState makeMove(Move move){
         Long gameStateId = move.getGameId();
@@ -46,8 +50,26 @@ public class GameService {
         Long player1 = gameState.getBlackPlayer().getId();
         Long player2 = gameState.getWhitePlayer().getId();
 
+        //handle pass , resignations -1 = pass, -2 = resign
+        if(color == -1){
+            gameState.increasePass();
+            gameState.toggleTurn();
+            if(gameState.getPassCount() == 2){
+                endGame();
+            }
+            GameState passUpdate = gameStateRepository.save(gameState);
+            return passUpdate;
+        }
+
+        if(color == -2) {
+            endGame();
+            return gameState;
+        }
         //do update moves
         if(color == 1 || color == 2){
+            if(gameState.getPassCount() > 0){
+                gameState.resetPass();
+            }
             if (gameState.getBoardState().get(x).get(y) != 0 ) {
                 System.out.println("POINT X Y IS " + gameState.getBoardState().get(x).get(y));
                 throw new RuntimeException("Invalid Move");

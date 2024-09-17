@@ -22,6 +22,21 @@ public class GameState {
     private Boolean isBlackTurn = true;
 
     @Column
+    private int komi;
+
+    @Column
+    private int blackTerritory;
+
+    @Column
+    private int whiteTerritory;
+
+    @Column
+    private int blackScore;
+
+    @Column
+    private int whiteScore;
+
+    @Column
     private int passCount = 0;
 
     @ManyToOne
@@ -86,6 +101,7 @@ public class GameState {
 
 
     public GameState() {
+        this.komi = 7.5;
         this.boardState = new ArrayList<>();
 
         for (int i = 0; i < 19; i++) {
@@ -214,5 +230,45 @@ public class GameState {
     }
     public boolean getGameOver() {
         return gameOver;
+    }
+
+    public int getKomi() {
+        return komi;
+    }
+
+    public void setKomi(int komi) {
+        this.komi = komi;
+    }
+
+    public int getBlackTerritory() {
+        return blackTerritory;
+    }
+
+    public void setBlackTerritory(int blackTerritory) {
+        this.blackTerritory = blackTerritory;
+    }
+
+    public int getWhiteTerritory() {
+        return whiteTerritory;
+    }
+
+    public void setWhiteTerritory(int whiteTerritory) {
+        this.whiteTerritory = whiteTerritory;
+    }
+
+    public int getBlackScore() {
+        return blackScore;
+    }
+
+    public void setBlackScore(int blackScore) {
+        this.blackScore = blackScore;
+    }
+
+    public int getWhiteScore() {
+        return whiteScore;
+    }
+
+    public void setWhiteScore(int whiteScore) {
+        this.whiteScore = whiteScore;
     }
 }

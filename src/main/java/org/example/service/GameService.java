@@ -36,6 +36,11 @@ public class GameService {
 
     public void endGame(Long gameStateId) {
         GameState gameState = gameStateRepository.findById(gameStateId).orElseThrow(() -> new RuntimeException("Game not found"));
+        //algo to calculate territory
+
+        gameState.setBlackScore(gameState.getBlackTerritory() + gameState.getBlackPlayerCaptures());
+        gameState.setWhiteScore(gameState.getKomi() + gameState.getWhiteTerritory() + gameState.getWhitePlayerCaptures());
+
         gameState.setGameOver(true);
         gameStateRepository.save(gameState);
         System.out.println("Game ended");

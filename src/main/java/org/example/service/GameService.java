@@ -91,6 +91,11 @@ public class GameService {
             Long otherPlayer = player1 == playerId ? player2 : player1;
             gameState.setLoser(playerId);
             gameState.setWinner(otherPlayer);
+            if(playerId == player1) {
+                gameState.setResign(1);
+            }else{
+                gameState.setResign(2);
+            }
             gameStateRepository.save(gameState);
             return gameState;
         }

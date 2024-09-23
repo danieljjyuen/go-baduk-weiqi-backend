@@ -58,6 +58,9 @@ public class GameState {
     private Player whitePlayer;
 
     @Column
+    private int resign = 0;
+
+    @Column
     private double blackPlayerCaptures = 0;
 
     @Column
@@ -316,6 +319,14 @@ public class GameState {
 
     public void setLoser(Long loser) {
         this.loser = loser;
+    }
+
+    public int getResign() {
+        return resign;
+    }
+
+    public void setResign(int resign) {
+        this.resign = resign;
     }
 }
 

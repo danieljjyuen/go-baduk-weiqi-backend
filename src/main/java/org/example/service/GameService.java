@@ -74,13 +74,24 @@ public class GameService {
             gameState.toggleTurn();
             if(gameState.getPassCount() == 2){
                 endGame(gameStateId);
+                if(gameState.getBlackScore() > gameState.getWhiteScore()) {
+                    gameState.setWinner(player1);
+                    gameState.setLoser(player2);
+                }else{
+                    gameState.setWinner(player2);
+                    gameState.setLoser(player1);
+                }
             }
             GameState passUpdate = gameStateRepository.save(gameState);
             return passUpdate;
         }
-
+        //handle resign
         if(color == -2) {
             endGame(gameStateId);
+            Long otherPlayer = player1 == playerId ? player2 : player1;
+            gameState.setLoser(playerId);
+            gameState.setWinner(otherPlayer);
+            gameStateRepository.save(gameState);
             return gameState;
         }
         //do update moves

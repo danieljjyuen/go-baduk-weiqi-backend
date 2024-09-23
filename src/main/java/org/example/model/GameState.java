@@ -19,6 +19,12 @@ public class GameState {
     @Column
     private double whiteStoneCount =0;
 
+    @Column
+    private Long winner;
+
+    @Column
+    private Long loser;
+
     @Transient
     private List<List<Integer>> boardState;
 
@@ -295,4 +301,22 @@ public class GameState {
     public void setWhiteStoneCount(double whiteStoneCount) {
         this.whiteStoneCount = whiteStoneCount;
     }
+
+    public Long getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Long winner) {
+        this.winner = winner;
+    }
+
+    public Long getLoser() {
+        return loser;
+    }
+
+    public void setLoser(Long loser) {
+        this.loser = loser;
+    }
 }
+
+

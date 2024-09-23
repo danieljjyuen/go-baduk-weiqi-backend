@@ -36,10 +36,13 @@ public class GameService {
 
     public void endGame(Long gameStateId) {
         GameState gameState = gameStateRepository.findById(gameStateId).orElseThrow(() -> new RuntimeException("Game not found"));
-        //algo to calculate territory
-
-        gameState.setBlackScore(gameState.getBlackTerritory() + gameState.getBlackPlayerCaptures());
-        gameState.setWhiteScore(gameState.getKomi() + gameState.getWhiteTerritory() + gameState.getWhitePlayerCaptures());
+        int[] scores = calculateTerritory(gameState.getBoardState());
+        gameState.setBlackTerritory(scores[0]);
+        gameState.setWhiteTerritory(scores[1]);
+        
+        //score include stone count + empty space in territory - stone that were captured by opponent
+        gameState.setBlackScore(gameState.getBlackTerritory() + gameState.getBlackStoneCount() - gameState.getWhitePlayerCaptures());
+        gameState.setWhiteScore(gameState.getKomi() + gameState.getWhiteTerritory() + gameState.getWhiteStoneCount() - gameState.getBlackPlayerCaptures());
 
         gameState.setGameOver(true);
         gameStateRepository.save(gameState);
@@ -95,6 +98,11 @@ public class GameService {
                 if(stone == color){
                     if((stone == 1 && player1.equals(playerId)) || (stone ==2 && player2.equals(playerId)))  {
                         gameState.getBoardState().get(x).set(y, stone);
+                        if(color ==1){
+                            gameState.setBlackStoneCount(gameState.getBlackStoneCount()+1);
+                        }else{
+                            gameState.setWhiteStoneCount(gameState.getWhiteStoneCount()+1);
+                        }
                         gameState.toggleTurn();
 
                         //check for captures
@@ -259,4 +267,80 @@ public class GameService {
             }
         }
     }
+
+    private int[] floodFill(int x, int y, List<List<Integer>> board, boolean[][] visited) {
+        //out of bound
+        if(x < 0 || y< 0 || x>=board.size() || y>=board.get(0).size() || visited[x][y]) {
+            return new int[] {0,-1};
+        }
+
+        //valid stones color
+        if(board.get(x).get(y) == 1 || board.get(x).get(y) == 2) {
+            //[] [score, color]
+            return new int[] {0,board.get(x).get(y)};
+        }
+
+        //not empty space
+        if(board.get(x).get(y) != 0){
+            return new int[] {0,-1};
+        }
+
+        visited[x][y] = true;
+
+        int emptySpace = 1;
+        int surroundingColor = 0;
+        //seki where both color share territory
+        boolean mixColor = false;
+
+        int[][] directions = {{0,1}, {0,-1}, {1,0}, {-1,0}};
+        for(int[] direction : directions) {
+            int newX = x + direction[0];
+            int newY = y + direction[1];
+
+            int[] result = floodFill(newX, newY, board, visited);
+            emptySpace+= result[0];
+
+            //on valid stone find surrounding color
+            if(result[1] != -1) {
+                if(surroundingColor == 0){
+                    surroundingColor = result[1];
+                } else if(surroundingColor != result[1]) {
+                    mixColor = true;
+                }
+            }
+        }
+
+        //seki
+        if(mixColor) {
+            surroundingColor = -1;
+        }
+        return new int[]{emptySpace, surroundingColor};
+
+    }
+
+    private int[] calculateTerritory(List<List<Integer>> board) {
+        int blackTerritory = 0;
+        int whiteTerritory = 0;
+
+        boolean[][] visited = new boolean[board.size()][board.get(0).size()];
+
+        for(int i =0; i < board.size(); i++){
+            for(int j=0; j< board.get(i).size(); j++) {
+                if(board.get(i).get(j) == 0 && !visited[i][j]) {
+                    int[] result = floodFill(i,j, board,visited);
+
+                    int emptySpace = result[0];
+                    int surroundColor = result[1];
+
+                    if(surroundColor == 1) {
+                        blackTerritory+= emptySpace;
+                    }else if(surroundColor == 2) {
+                        whiteTerritory+= emptySpace;
+                    }
+                }
+            }
+        }
+        return new int[] {blackTerritory, whiteTerritory};
+    }
+
 }

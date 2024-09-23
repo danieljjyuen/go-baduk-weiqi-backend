@@ -13,6 +13,12 @@ public class GameState {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private int blackStoneCount =0;
+
+    @Column
+    private int whiteStoneCount =0;
+
     @Transient
     private List<List<Integer>> boardState;
 
@@ -101,6 +107,8 @@ public class GameState {
 
 
     public GameState() {
+        //7.5 komi for chinese rules
+        //6.5 komi for japanese rules
         this.komi = 7.5;
         this.boardState = new ArrayList<>();
 
@@ -270,5 +278,21 @@ public class GameState {
 
     public void setWhiteScore(int whiteScore) {
         this.whiteScore = whiteScore;
+    }
+
+    public int getBlackStoneCount() {
+        return blackStoneCount;
+    }
+
+    public void setBlackStoneCount(int blackStoneCount) {
+        this.blackStoneCount = blackStoneCount;
+    }
+
+    public int getWhiteStoneCount() {
+        return whiteStoneCount;
+    }
+
+    public void setWhiteStoneCount(int whiteStoneCount) {
+        this.whiteStoneCount = whiteStoneCount;
     }
 }

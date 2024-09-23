@@ -14,10 +14,10 @@ public class GameState {
     private Long id;
 
     @Column
-    private int blackStoneCount =0;
+    private double blackStoneCount =0;
 
     @Column
-    private int whiteStoneCount =0;
+    private double whiteStoneCount =0;
 
     @Transient
     private List<List<Integer>> boardState;
@@ -28,19 +28,19 @@ public class GameState {
     private Boolean isBlackTurn = true;
 
     @Column
-    private int komi;
+    private double komi;
 
     @Column
-    private int blackTerritory;
+    private double blackTerritory;
 
     @Column
-    private int whiteTerritory;
+    private double whiteTerritory;
 
     @Column
-    private int blackScore;
+    private double blackScore;
 
     @Column
-    private int whiteScore;
+    private double whiteScore;
 
     @Column
     private int passCount = 0;
@@ -52,10 +52,10 @@ public class GameState {
     private Player whitePlayer;
 
     @Column
-    private int blackPlayerCaptures = 0;
+    private double blackPlayerCaptures = 0;
 
     @Column
-    private int whitePlayerCaptures = 0;
+    private double whitePlayerCaptures = 0;
 
     @Column
     private boolean gameOver = false;
@@ -206,19 +206,19 @@ public class GameState {
         this.twoTurnsHash = twoTurnsHash;
     }
 
-    public void setBlackPlayerCaptures(int blackPlayerCaptures) {
+    public void setBlackPlayerCaptures(double blackPlayerCaptures) {
         this.blackPlayerCaptures = blackPlayerCaptures;
     }
 
-    public int getWhitePlayerCaptures() {
+    public double getWhitePlayerCaptures() {
         return whitePlayerCaptures;
     }
 
-    public void setWhitePlayerCaptures(int whitePlayerCaptures) {
+    public void setWhitePlayerCaptures(double whitePlayerCaptures) {
         this.whitePlayerCaptures = whitePlayerCaptures;
     }
 
-    public int getBlackPlayerCaptures() {
+    public double getBlackPlayerCaptures() {
         return blackPlayerCaptures;
     }
 
@@ -240,59 +240,59 @@ public class GameState {
         return gameOver;
     }
 
-    public int getKomi() {
+    public double getKomi() {
         return komi;
     }
 
-    public void setKomi(int komi) {
+    public void setKomi(double komi) {
         this.komi = komi;
     }
 
-    public int getBlackTerritory() {
+    public double getBlackTerritory() {
         return blackTerritory;
     }
 
-    public void setBlackTerritory(int blackTerritory) {
+    public void setBlackTerritory(double blackTerritory) {
         this.blackTerritory = blackTerritory;
     }
 
-    public int getWhiteTerritory() {
+    public double getWhiteTerritory() {
         return whiteTerritory;
     }
 
-    public void setWhiteTerritory(int whiteTerritory) {
+    public void setWhiteTerritory(double whiteTerritory) {
         this.whiteTerritory = whiteTerritory;
     }
 
-    public int getBlackScore() {
+    public double getBlackScore() {
         return blackScore;
     }
 
-    public void setBlackScore(int blackScore) {
+    public void setBlackScore(double blackScore) {
         this.blackScore = blackScore;
     }
 
-    public int getWhiteScore() {
+    public double getWhiteScore() {
         return whiteScore;
     }
 
-    public void setWhiteScore(int whiteScore) {
+    public void setWhiteScore(double whiteScore) {
         this.whiteScore = whiteScore;
     }
 
-    public int getBlackStoneCount() {
+    public double getBlackStoneCount() {
         return blackStoneCount;
     }
 
-    public void setBlackStoneCount(int blackStoneCount) {
+    public void setBlackStoneCount(double blackStoneCount) {
         this.blackStoneCount = blackStoneCount;
     }
 
-    public int getWhiteStoneCount() {
+    public double getWhiteStoneCount() {
         return whiteStoneCount;
     }
 
-    public void setWhiteStoneCount(int whiteStoneCount) {
+    public void setWhiteStoneCount(double whiteStoneCount) {
         this.whiteStoneCount = whiteStoneCount;
     }
 }

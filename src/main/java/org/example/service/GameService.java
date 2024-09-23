@@ -43,7 +43,7 @@ public class GameService {
         //score include stone count + empty space in territory - stone that were captured by opponent
         gameState.setBlackScore(gameState.getBlackTerritory() + gameState.getBlackStoneCount() - gameState.getWhitePlayerCaptures());
         gameState.setWhiteScore(gameState.getKomi() + gameState.getWhiteTerritory() + gameState.getWhiteStoneCount() - gameState.getBlackPlayerCaptures());
-
+        System.out.println("b vs. w" + gameState.getBlackScore() + " " + gameState.getWhiteScore());
         gameState.setGameOver(true);
         gameStateRepository.save(gameState);
         System.out.println("Game ended");

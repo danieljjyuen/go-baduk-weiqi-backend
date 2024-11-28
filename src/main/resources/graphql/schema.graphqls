@@ -46,4 +46,5 @@ type Query {
     getGameState(gameId: ID!): GameState
     getRooms: [Room]
     getGameStateWithRoomId(roomId: ID!) : GameState
+    getOnlinePlayers: [Player]
 }

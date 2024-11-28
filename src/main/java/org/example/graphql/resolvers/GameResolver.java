@@ -87,4 +87,10 @@
             return gameService.getGameStateWithRoomId((roomId));
         }
 
+        @QueryMapping
+        public List<Player> getOnlinePlayers() {
+            System.out.println("fetching online players list");
+            return playerService.getOnlinePlayers();
+        }
+
     }

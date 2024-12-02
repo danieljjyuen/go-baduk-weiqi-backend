@@ -59,6 +59,11 @@
         }
 
         @MutationMapping
+        public Player logout(@Argument String username) {
+            return playerService.logout(username);
+        }
+
+        @MutationMapping
         public Player createPlayer(@Argument String username, @Argument String password) {
             System.out.println("creating player ~~~~~~~~~~~~~~");
             return playerService.createPlayer(username, password);

@@ -43,6 +43,14 @@ public class PlayerService {
         return player;
     }
 
+    public Player logout(String username) {
+        Player player = playerRepository.findByUsername(username);
+        if(player == null) throw new RuntimeException("Invalid Player");
+        player.setOnline(false);
+        playerRepository.save(player);
+        return player;
+    }
+
     public List<Player> getOnlinePlayers() {
         return playerRepository.findByOnlineTrue();
     }
